@@ -33,13 +33,17 @@ fs.readdirSync(__dirname)
     db[model.name] = model;
   });
 
+Object.values(db).forEach((model) => {
+  model.associate(db);
+});
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 const dbConnect = async () => {
   try {
     // await db.sequelize.authenticate();
-    await db.sequelize.sync();
+    await db.sequelize.sync({ force: true });
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

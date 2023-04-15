@@ -7,17 +7,17 @@ module.exports = (sequelize, DataTypes) => {
       species: DataTypes.STRING,
       imageUrl: DataTypes.STRING,
     },
-    {
-      timestamps: true,
-    }
+    { timestamps: true }
   );
 
-  // https://www.youtube.com/watch?v=HJGWu0cZUe8&ab_channel=WittCode
-  // it actually works this way
-  Villager.hasOne(sequelize.models.User, {
-    as: 'villager',
-    constraints: false,
-  }); // it's actually the user has one villager idk why I have to do it like this for mysql to add villagerId column to user, video goes through it.
+  Villager.associate = function ({ User }) {
+    // https://www.youtube.com/watch?v=HJGWu0cZUe8&ab_channel=WittCode
+    // it actually works this way
+    Villager.hasOne(User, {
+      constraints: false,
+      as: 'villager',
+    }); // it's actually the user has one villager idk why I have to do it like this for mysql to add villagerId column to user, video goes through it.
+  };
 
   return Villager;
 };

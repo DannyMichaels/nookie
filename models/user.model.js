@@ -6,10 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
     },
-    {
-      timestamps: true,
-    }
+    { timestamps: true }
   );
+
+  User.associate = function (models) {
+    User.hasMany(models.AuthToken);
+  };
 
   return User;
 };
