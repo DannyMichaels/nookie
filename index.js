@@ -1,4 +1,4 @@
 require('dotenv').config();
-const { testDbConnection } = require('./db');
+const createServer = require('./server');
 
-testDbConnection();
+createServer();

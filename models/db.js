@@ -6,16 +6,22 @@ const URI =
 
 const sequelize = new Sequelize(URI);
 
-const testDbConnection = async () => {
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+// db.tutorials = require('./tutorial.model.js')(sequelize, Sequelize);
+
+const dbConnect = async () => {
   try {
-    await sequelize.authenticate();
+    // await db.sequelize.authenticate();
+    await db.sequelize.sync();
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 };
 
-module.exports = {
-  sql: sequelize,
-  testDbConnection,
-};
+db.dbConnect = dbConnect;
+module.exports = db;
