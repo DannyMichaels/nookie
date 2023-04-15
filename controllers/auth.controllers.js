@@ -60,7 +60,7 @@ const logout = async (req, res) => {
   // the authToken should be missing at this point, check anyway
   if (user && token) {
     await req.user.logout(token);
-    return res.status(204).json({ message: 'success' });
+    return res.status(200).json({ message: 'success' });
   }
 
   // if the user missing, the user is not logged in, hence we
