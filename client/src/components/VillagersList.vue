@@ -49,10 +49,9 @@ defineProps({
 
 .villager:hover {
   transform: scale(1.04);
-  opacity: 0.9;
 }
 
 .villager:active {
-  filter: grayscale(1);
+  filter: brightness(1.2);
 }
 </style>
