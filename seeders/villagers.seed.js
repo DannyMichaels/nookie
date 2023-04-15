@@ -7,7 +7,7 @@ module.exports = {
     // get the villagers from nookipedia api, then add them to our database.
     const reqInstance = axios.create({
       headers: {
-        'x-api-key': '4983ed3c-b6f3-4276-b62c-59448cc307ac',
+        'x-api-key': process.env.NOOKIPEDIA_API_KEY,
       },
     });
 
