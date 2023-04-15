@@ -2,7 +2,13 @@ const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
 const db = require('./models');
+const cookieParser = require('cookie-parser');
+const authMiddleware = require('./middleware/auth.middleware');
+
+// routes
 const villagerRoutes = require('./routes/villagers.routes');
+const authRoutes = require('./routes/auth.routes');
+
 const cors = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -17,9 +23,10 @@ async function createServer() {
   app.use(logger('dev'));
   app.use(cors);
   app.use(helmet()); // security with express-helmet
-
   // parse requests of content-type - application/json
   app.use(express.json());
+  app.use(cookieParser());
+  app.use(authMiddleware);
 
   await db.connect();
 
@@ -35,6 +42,7 @@ async function createServer() {
 
   // routes
   app.use('/api', villagerRoutes);
+  app.use('/api', authRoutes);
 
   // error handler
   app.use(function (err, req, res, next) {

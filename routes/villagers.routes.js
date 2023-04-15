@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const controllers = require('../controllers/villagers.controllers');
+const { findAll } = require('../controllers/villagers.controllers');
 const router = Router();
 
-router.get('/villagers', controllers.findAll);
+router.get('/villagers', findAll);
 
 module.exports = router;
