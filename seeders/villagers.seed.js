@@ -1,6 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 
+// npx sequelize-cli db:seed:all
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // get the villagers from nookipedia api, then add them to our database.
@@ -23,11 +24,8 @@ module.exports = {
         updatedAt: new Date(),
       }));
 
-      const villagerCount = await queryInterface.bulkInsert(
-        'Villagers',
-        allVillagers
-      );
-      console.log(`created ${villagerCount} villagers!`);
+      await queryInterface.bulkInsert('Villagers', allVillagers);
+      console.log(`seeded ${allVillagers.length} villagers!`);
       process.exit(1);
     } catch (error) {
       console.log('error UP:seeding villagers', error);
@@ -35,6 +33,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
+    // npx sequelize-cli db:seed:undo:all
     try {
       await queryInterface.bulkDelete('Villagers', null, {});
       console.log(`deleted all villagers!`);
