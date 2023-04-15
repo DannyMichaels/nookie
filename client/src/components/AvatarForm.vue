@@ -1,6 +1,20 @@
 <template>
-  <v-form v-model="valid">
-    <v-container class="bg-blue mt-10" style="max-width: 1100px" fluid>
+  <v-form v-model="valid" class="my-10">
+    <h1 class="text-h1 text-center">Form</h1>
+    <v-btn @click="onBackClick">Go back</v-btn>
+    <v-container color="bg-white" style="max-width: 1100px" fluid>
+      <v-row>
+        <v-col cols="1" sm="12">
+          <v-img
+            class="ml-auto mr-auto"
+            :width="100"
+            aspect-ratio="16/9"
+            cover
+            :src="selectedVillager.imageUrl"
+            :alt="nickname || selectedVillager.name"
+          />
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" sm="6">
           <v-text-field
@@ -33,7 +47,7 @@
             label="Password"
             counter
             :rules="passwordRules"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPassword ? 'text' : 'password'"
             required
             hide-details="auto"
@@ -62,6 +76,16 @@
 
 <script setup>
 import { ref } from 'vue'
+defineProps({
+  selectedVillager: {
+    type: Object,
+    required: true
+  },
+  onBackClick: {
+    type: Function,
+    required: true
+  }
+})
 
 const valid = ref(false)
 const email = ref('')

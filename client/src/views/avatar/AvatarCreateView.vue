@@ -22,6 +22,10 @@ onUpdated(() => {
 const handleVillagerClick = (villager) => {
   state.selectedVillager = villager
 }
+
+const handleFormBackClick = () => {
+  state.selectedVillager = null
+}
 </script>
 
 <template>
@@ -32,6 +36,10 @@ const handleVillagerClick = (villager) => {
       :onVillagerClick="handleVillagerClick"
     />
 
-    <AvatarForm v-if="state.selectedVillager?.id" />
+    <AvatarForm
+      v-if="state.selectedVillager?.id"
+      :onBackClick="handleFormBackClick"
+      :selectedVillager="state.selectedVillager"
+    />
   </main>
 </template>
