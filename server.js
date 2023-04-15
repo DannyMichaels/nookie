@@ -1,7 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
-const { dbConnect } = require('./models/db');
+const { dbConnect } = require('./models');
 
 const cors = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

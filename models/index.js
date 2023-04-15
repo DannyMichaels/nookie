@@ -11,7 +11,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// db.tutorials = require('./tutorial.model.js')(sequelize, Sequelize);
+db.villagers = require('./villager.model.js')(sequelize, Sequelize);
 
 const dbConnect = async () => {
   try {
