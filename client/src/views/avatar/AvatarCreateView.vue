@@ -6,13 +6,21 @@ import AvatarForm from '../../components/AvatarForm.vue'
 
 const state = reactive({
   allVillagers: [],
+  queriedVillagers: [],
+  isLoading: true,
+  error: false,
   selectedVillager: null
 })
 
-onMounted(() => {
-  axios.get('http://localhost:3000/api/villagers').then((resp) => {
+onMounted(async () => {
+  try {
+    const resp = await axios.get('http://localhost:3000/api/villagers')
     state.allVillagers = resp.data
-  })
+    state.queriedVillagers = resp.data
+    state.isLoading = false
+  } catch (error) {
+    state.error = true
+  }
 })
 
 onUpdated(() => {
@@ -29,17 +37,41 @@ const handleFormBackClick = () => {
 </script>
 
 <template>
-  <main class="avatar-create__wrapper">
-    <VillagersList
-      v-if="!state.selectedVillager?.id"
-      :villagers="state.allVillagers"
-      :onVillagerClick="handleVillagerClick"
-    />
+  <main class="avatar-create__wrapper--error" v-if="state.error">
+    <h1 class="text-h1 text-red text-center">ERROR</h1>
+  </main>
 
-    <AvatarForm
-      v-if="state.selectedVillager?.id"
-      :onBackClick="handleFormBackClick"
-      :selectedVillager="state.selectedVillager"
-    />
+  <main class="avatar-create__wrapper" v-else>
+    <v-container fluid>
+      <v-progress-linear
+        indeterminate
+        v-if="state.isLoading"
+        class="loading__container"
+      ></v-progress-linear>
+
+      <template v-else>
+        <VillagersList
+          v-if="!state.selectedVillager?.id"
+          :villagers="state.queriedVillagers"
+          :onVillagerClick="handleVillagerClick"
+        />
+
+        <AvatarForm
+          v-if="state.selectedVillager?.id"
+          :onBackClick="handleFormBackClick"
+          :selectedVillager="state.selectedVillager"
+        />
+      </template>
+    </v-container>
   </main>
 </template>
+
+<style scoped>
+.avatar-create__wrapper,
+.avatar-create__wrapper--error {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+</style>
