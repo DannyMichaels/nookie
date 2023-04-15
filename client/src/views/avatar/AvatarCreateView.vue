@@ -1,16 +1,37 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, onUpdated } from 'vue'
 import axios from 'axios'
+import VillagersList from '../../components/VillagersList.vue'
+import AvatarForm from '../../components/AvatarForm.vue'
 
 const state = reactive({
-  allVillagers: []
+  allVillagers: [],
+  selectedVillager: null
 })
 
 onMounted(() => {
-  state.allVillagers = ['1', '2', '3']
+  axios.get('http://localhost:3000/api/villagers').then((resp) => {
+    state.allVillagers = resp.data
+  })
 })
+
+onUpdated(() => {
+  console.log(state.selectedVillager?.id)
+})
+
+const handleVillagerClick = (villager) => {
+  state.selectedVillager = villager
+}
 </script>
 
 <template>
-  <h1>AvatarCreate</h1>
+  <main class="avatar-create__wrapper">
+    <VillagersList
+      v-if="!state.selectedVillager?.id"
+      :villagers="state.allVillagers"
+      :onVillagerClick="handleVillagerClick"
+    />
+
+    <AvatarForm v-if="state.selectedVillager?.id" />
+  </main>
 </template>

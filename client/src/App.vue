@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <v-app>
+  <v-app class="bg-surface-variant">
     <RouterView />
   </v-app>
 </template>
