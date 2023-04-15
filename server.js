@@ -1,7 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
-const { dbConnect } = require('./models');
+const db = require('./models');
 
 const cors = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -21,7 +21,7 @@ async function createServer() {
   // parse requests of content-type - application/json
   app.use(express.json());
 
-  await dbConnect();
+  await db.connect();
 
   app.get('/', (_req, res) => {
     res.send('<h1>Welcome</h1>');
