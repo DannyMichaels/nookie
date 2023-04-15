@@ -7,14 +7,19 @@ defineProps({
   onVillagerClick: {
     type: Function,
     required: true
+  },
+  header: {
+    type: String,
+    required: false
   }
 })
 </script>
 
 <template>
   <v-container class="villagers__container">
-    <h1 class="text-h1 text-center pt-10 pb-10">Select Villager</h1>
-    <v-row no-gutters>
+    <h1 class="text-h1 text-center pt-10" v-if="header">{{ header }}</h1>
+
+    <v-row no-gutters class="pt-10">
       <v-col v-for="villager in villagers" :key="villager.id" class="villager__container">
         <img
           @click="onVillagerClick(villager)"

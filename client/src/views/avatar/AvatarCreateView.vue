@@ -52,6 +52,7 @@ const handleFormBackClick = () => {
       <template v-else>
         <VillagersList
           v-if="!state.selectedVillager?.id"
+          :header="'Choose Your Avatar'"
           :villagers="state.queriedVillagers"
           :onVillagerClick="handleVillagerClick"
         />
