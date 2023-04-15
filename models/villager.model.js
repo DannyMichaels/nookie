@@ -1,26 +1,24 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Villager extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+  const Villager = sequelize.define(
+    'Villager',
+    {
+      name: DataTypes.STRING,
+      wikiUrl: DataTypes.STRING,
+      species: DataTypes.STRING,
+      imageUrl: DataTypes.STRING,
+    },
+    {
+      timestamps: true,
     }
-  }
-  Villager.init({
-    name: DataTypes.STRING,
-    wikiUrl: DataTypes.STRING,
-    species: DataTypes.STRING,
-    imageUrl: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Villager',
-  });
+  );
+
+  // https://www.youtube.com/watch?v=HJGWu0cZUe8&ab_channel=WittCode
+  // it actually works this way
+  Villager.hasOne(sequelize.models.User, {
+    as: 'villager',
+    constraints: false,
+  }); // it's actually the user has one villager idk why I have to do it like this for mysql to add villagerId column to user, video goes through it.
+
   return Villager;
 };
