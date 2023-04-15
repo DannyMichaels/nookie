@@ -2,7 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
 const db = require('./models');
-
+const villagerRoutes = require('./routes/villagers.routes');
 const cors = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -31,6 +31,16 @@ async function createServer() {
 
   app.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`);
+  });
+
+  // routes
+  app.use('/api', villagerRoutes);
+
+  // error handler
+  app.use(function (err, req, res, next) {
+    return res.status(500).json({
+      error: err.message,
+    });
   });
 }
 

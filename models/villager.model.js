@@ -1,18 +1,26 @@
-module.exports = (sequelize, Sequelize) => {
-  const Villager = sequelize.define('villager', {
-    name: {
-      type: Sequelize.STRING,
-    },
-    wikiUrl: {
-      type: Sequelize.STRING,
-    },
-    species: {
-      type: Sequelize.STRING,
-    },
-    imageUrl: {
-      type: Sequelize.STRING,
-    },
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Villager extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  Villager.init({
+    name: DataTypes.STRING,
+    wikiUrl: DataTypes.STRING,
+    species: DataTypes.STRING,
+    imageUrl: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Villager',
   });
-
   return Villager;
 };
