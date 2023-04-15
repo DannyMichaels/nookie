@@ -1,10 +1,16 @@
 {
-  "name": "Nookie",
+  "name": "nookie",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "mysql2": "^3.2.1",
+    "nodemon": "^2.0.22",
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.31.0"
