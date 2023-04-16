@@ -52,6 +52,9 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
+      bells: {
+        type: DataTypes.INTEGER, // currency
+      },
     },
     { timestamps: true }
   );
