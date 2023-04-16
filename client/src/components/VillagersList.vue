@@ -4,15 +4,17 @@ defineProps({
     type: Array,
     required: true
   },
-  onVillagerClick: {
-    type: Function,
-    required: true
-  },
+
   header: {
     type: String,
     required: false
   }
 })
+const emit = defineEmits(['villager-click'])
+
+const onVillagerClick = (villager) => {
+  emit('villager-click', villager)
+}
 </script>
 
 <template>

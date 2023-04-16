@@ -31,6 +31,7 @@ export const router = createRouter({
   ]
 })
 
+// auth guard
 router.beforeEach(async (to) => {
   // clear alert on route change
 
@@ -38,8 +39,9 @@ router.beforeEach(async (to) => {
   const publicPages = ['/account/login', '/account/register']
   const authRequired = !publicPages.includes(to.path)
   const authStore = useAuthStore()
+  const isLoggedIn = !!authStore.user?.token
 
-  if (authRequired && !authStore.user) {
+  if (authRequired && !isLoggedIn) {
     authStore.returnUrl = to.fullPath
     return '/account/login'
   }

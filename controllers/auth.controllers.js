@@ -5,6 +5,10 @@ const register = async (req, res) => {
   try {
     const { nickname, email, password, villagerId } = req.body;
 
+    if (!password) {
+      return res.status(400).json({ error: 'Password cannot be empty' });
+    }
+
     const hash = bcrypt.hashSync(password, 10);
 
     // create a new user with the password hash from bcrypt
@@ -18,9 +22,11 @@ const register = async (req, res) => {
     // send back the new user and auth token to the
     // client { user, authToken }
     const data = await user.authorize();
-    return res.json(data);
+    return res.status(200).json(data);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    const msg = errorMessage(error.message);
+    const errors = msg.split(',');
+    return res.status(400).json({ errors });
   }
 };
 
@@ -35,7 +41,7 @@ const login = async (req, res) => {
 
   try {
     const { user, authToken } = await User.authenticate(email, password);
-    return res.json({ user, authToken });
+    return res.status(200).json({ user, authToken });
   } catch (error) {
     return res
       .status(400)
@@ -64,6 +70,10 @@ const logout = async (req, res) => {
   // use status code 400 indicating a bad request was made
   // and send back a message
   return res.status(400).send({ error: 'not authenticated' });
+};
+
+const errorMessage = (error) => {
+  return error.replaceAll('Validation error:', '').trim();
 };
 
 module.exports = {

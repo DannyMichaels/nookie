@@ -37,6 +37,11 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: requiredFieldMessage('password'),
+          },
+        },
       },
       villagerId: {
         type: DataTypes.INTEGER,
@@ -100,5 +105,5 @@ module.exports = (sequelize, DataTypes) => {
 };
 
 function requiredFieldMessage(field) {
-  return `${field} is required`;
+  return `${field} cannot be empty`;
 }
