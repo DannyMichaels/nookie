@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const isUnique = require('../validators/isUnique');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -8,15 +9,43 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
+
+        validate: {
+          unique: isUnique('User', 'nickname'),
+
+          notEmpty: {
+            msg: requiredFieldMessage('nickname'),
+          },
+          len: {
+            args: [4, 32],
+            msg: 'nickname must be at least 4 characters long and no longer than 32 characters',
+          },
+        },
       },
       email: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false,
+        lowercase: true,
+        unique: true,
+
+        validate: {
+          isEmail: true,
+          notEmpty: true,
+          isUnique: isUnique('User', 'email'), // custom message in back-end response
+        },
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      villagerId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: false,
+        references: {
+          model: 'Villager',
+          key: 'id',
+        },
       },
     },
     { timestamps: true }
@@ -69,3 +98,7 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
+
+function requiredFieldMessage(field) {
+  return `${field} is required`;
+}

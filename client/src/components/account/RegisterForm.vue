@@ -84,6 +84,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores'
+import { router } from '@/router'
+
 defineProps({
   selectedVillager: {
     type: Object,
@@ -103,12 +106,29 @@ const passwordConfirm = ref('')
 const showPassword = ref(false)
 const showPasswordConfirm = ref(false)
 
-const emailRules = [
-  (value) => {
-    if (value) return true
+// const handleSubmit = async () => {
+//   const formData = {
+//     email,
+//     nickname,
+//     password,
+//     villagerId: selectedVillager.value.id
+//   }
+//   const authStore = useAuthStore()
+//   try {
+//     await authStore.register(formData)
+//     await router.push('/account/login')
+//     alertStore.success('Registration successful')
+//   } catch (error) {
+//     alertStore.error(error)
+//   }
+// }
 
-    return 'required.'
-  },
+const requiredRule = (value) => (value ? true : 'required')
+const minLengthRule = (value, length) =>
+  value.length >= length ? true : `Min ${length} characters`
+
+const emailRules = [
+  requiredRule,
   (value) => {
     if (/.+@.+\..+/.test(value)) return true
 
@@ -116,41 +136,12 @@ const emailRules = [
   }
 ]
 
-const nicknameRules = [
-  (value) => {
-    if (value) return true
+const nicknameRules = [requiredRule, (value) => minLengthRule(value, 4)]
 
-    return 'required.'
-  },
-  (value) => {
-    if (value.length >= 4) return true
-
-    return 'Min 4 characters'
-  }
-]
-
-const passwordRules = [
-  (value) => {
-    if (value) return true
-
-    return 'required.'
-  },
-
-  (value) => {
-    if (value.length < 7) {
-      return 'Min 8 characters'
-    }
-
-    return true
-  }
-]
+const passwordRules = [requiredRule, (value) => minLengthRule(value, 8)]
 
 const passwordConfirmRules = [
-  (value) => {
-    if (value) return true
-
-    return 'required.'
-  },
+  requiredRule,
 
   (value) => {
     if (value !== password.value) {
