@@ -18,9 +18,9 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/avatar/create',
-      name: 'avatarCreate',
-      component: () => import('../views/avatar/AvatarCreateView.vue')
+      path: '/account/create',
+      name: 'accountCreate',
+      component: () => import('../views/account/AccountCreateView.vue')
     }
   ]
 })

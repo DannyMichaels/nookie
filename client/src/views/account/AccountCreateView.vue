@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, reactive, onUpdated } from 'vue'
+import { onMounted, reactive, onUpdated } from 'vue'
 import axios from 'axios'
 import VillagersList from '../../components/VillagersList.vue'
-import AvatarForm from '../../components/AvatarForm.vue'
+import AccountCreateForm from '../../components/AccountCreateForm.vue'
 
 const state = reactive({
   allVillagers: [],
@@ -57,7 +57,7 @@ const handleFormBackClick = () => {
           :onVillagerClick="handleVillagerClick"
         />
 
-        <AvatarForm
+        <AccountCreateForm
           v-if="state.selectedVillager?.id"
           :onBackClick="handleFormBackClick"
           :selectedVillager="state.selectedVillager"
