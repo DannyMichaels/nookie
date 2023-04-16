@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
   try {
-    const { nickname, email, password } = req.body;
+    const { nickname, email, password, villagerId } = req.body;
 
     const hash = bcrypt.hashSync(password, 10);
 
@@ -12,6 +12,7 @@ const register = async (req, res) => {
       nickname,
       email,
       password: hash,
+      villagerId, // avatar from Nookipedia villagers api check villagers.seed.js
     });
 
     // send back the new user and auth token to the
