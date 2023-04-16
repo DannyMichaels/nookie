@@ -42,7 +42,7 @@ const login = async (req, res) => {
     const { user, authToken } = await User.authenticate(email, password);
     return res.status(200).json({ user, authToken });
   } catch (error) {
-    return res.status(400).json({ error: 'invalid username or password' });
+    return res.status(400).json({ error: 'invalid email or password' });
   }
 };
 
