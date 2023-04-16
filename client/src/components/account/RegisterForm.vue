@@ -7,6 +7,7 @@
       <v-container style="max-width: 1100px" fluid>
         <v-row>
           <v-col cols="12" md="4" align-self="end">
+            <span class="text-center d-block mb-2">{{ nickname }}</span>
             <v-img
               class="ml-auto mr-auto"
               :width="100"
@@ -19,7 +20,7 @@
           <v-col>
             <v-row>
               <v-col sm="12" mb="2">
-                <h1 class="text-center text-h1">Form</h1>
+                <h1 class="text-center text-h1">Signup Form</h1>
               </v-col>
 
               <v-col sm="12" v-for="error in errors" :key="error" style="padding: 0">
@@ -79,12 +80,12 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
 
-        <v-row>
-          <v-col>
-            <v-btn type="submit" :disabled="!valid">Submit</v-btn>
+            <v-row>
+              <v-col align="center">
+                <v-btn type="submit" :disabled="!valid">Submit</v-btn>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-container>
