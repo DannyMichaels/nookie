@@ -32,7 +32,6 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
   // if the username / password is missing, we use status code 400
   // indicating a bad request was made and send back a message
   if (!email || !password) {
@@ -43,9 +42,7 @@ const login = async (req, res) => {
     const { user, authToken } = await User.authenticate(email, password);
     return res.status(200).json({ user, authToken });
   } catch (error) {
-    return res
-      .status(400)
-      .json({ error: 'invalid username or password', msg: error.message });
+    return res.status(400).json({ error: 'invalid username or password' });
   }
 };
 

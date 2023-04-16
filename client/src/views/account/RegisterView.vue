@@ -53,7 +53,7 @@ const handleSubmit = async (formData) => {
     await authStore.register(user)
     await router.push('/')
   } catch (error) {
-    state.formErrors = error.response.data.errors
+    return (state.formErrors = error.response.data.errors)
   }
 }
 </script>

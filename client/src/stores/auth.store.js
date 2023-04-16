@@ -23,6 +23,7 @@ export const useAuthStore = defineStore({
 
       // redirect to previous url or default to home page
       router.push(this.returnUrl || '/')
+      return this.user
     },
     async register(formData) {
       const { user, authToken } = await fetchWrapper.post('/auth/register', formData)

@@ -12,8 +12,16 @@ function request(method) {
   return async (url, body) => {
     const requestOptions = {
       method,
-      headers: authHeader()
+      headers: {
+        Connection: 'Keep-Alive'
+      }
     }
+
+    const authHeader = getAuthHeader()
+    if (authHeader) {
+      requestOptions.headers['Authorization'] = authHeader
+    }
+
     if (body) {
       requestOptions.headers['Content-Type'] = 'application/json'
       requestOptions.data = body
@@ -23,37 +31,31 @@ function request(method) {
 }
 
 // helper functions
-
-function authHeader() {
+function getAuthHeader() {
   // return auth header with jwt if user is logged in and request is to the api url
   const { user } = useAuthStore()
   const isLoggedIn = !!user?.token
+
   if (isLoggedIn) {
-    return { Authorization: `${user.token}` }
-  } else {
-    return {}
+    return user.token
   }
+  return null
 }
 
 async function handleResponse(response) {
-  try {
-    const { data, statusText } = response
-    // check for error response
-    if (statusText !== 'OK') {
-      const { user, logout } = useAuthStore()
-      if ([401, 403].includes(response.status) && user) {
-        // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-        logout()
-      }
-
-      // get error message from body or default to response status
-      const error = (data && data.message) || response.status
-      return Promise.reject(error)
+  const { data, statusText } = response
+  // check for error response
+  if (statusText !== 'OK') {
+    const { user, logout } = useAuthStore()
+    if ([401, 403].includes(response.status) && user) {
+      // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+      logout()
     }
 
-    return data
-  } catch (error) {
-    console.log('handle response error', error)
-    throw error
+    // get error message from body or default to response status
+    const error = (data && data.message) || response.status
+    return Promise.reject(error)
   }
+
+  return data
 }
