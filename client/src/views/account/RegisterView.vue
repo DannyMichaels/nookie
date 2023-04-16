@@ -1,30 +1,29 @@
 <script setup>
-import { ref, onMounted, reactive, onUpdated } from 'vue'
-import axios from 'axios'
-import VillagersList from '../../components/VillagersList.vue'
-import AvatarForm from '../../components/AvatarForm.vue'
+import { onMounted, reactive } from 'vue'
+import api from '@/services/apiConfig'
+import VillagersList from '@/components/VillagersList.vue'
+import RegisterForm from '@/components/account/RegisterForm.vue'
+import { useAuthStore } from '@/stores'
+import { router } from '@/router'
 
 const state = reactive({
   allVillagers: [],
   queriedVillagers: [],
   isLoading: true,
-  error: false,
+  fetchError: false,
+  formErrors: [],
   selectedVillager: null
 })
 
 onMounted(async () => {
   try {
-    const resp = await axios.get('http://localhost:3000/api/villagers')
+    const resp = await api.get('/villagers')
     state.allVillagers = resp.data
     state.queriedVillagers = resp.data
     state.isLoading = false
   } catch (error) {
-    state.error = true
+    state.fetchError = true
   }
-})
-
-onUpdated(() => {
-  console.log(state.selectedVillager?.id)
 })
 
 const handleVillagerClick = (villager) => {
@@ -34,10 +33,33 @@ const handleVillagerClick = (villager) => {
 const handleFormBackClick = () => {
   state.selectedVillager = null
 }
+
+const handleSubmit = async (formData) => {
+  state.formErrors = []
+  const authStore = useAuthStore()
+
+  const { password, passwordConfirm } = formData
+
+  if (password !== passwordConfirm) {
+    return (state.formErrors = ['Password and password confirmation must match'])
+  }
+
+  try {
+    const user = {
+      ...formData,
+      villagerId: state.selectedVillager?.id
+    }
+
+    await authStore.register(user)
+    await router.push('/')
+  } catch (error) {
+    state.formErrors = error.response.data.errors
+  }
+}
 </script>
 
 <template>
-  <main class="avatar-create__wrapper--error" v-if="state.error">
+  <main class="avatar-create__wrapper--error" v-if="state.fetchError">
     <h1 class="text-h1 text-red text-center">ERROR</h1>
   </main>
 
@@ -54,13 +76,15 @@ const handleFormBackClick = () => {
           v-if="!state.selectedVillager?.id"
           :header="'Choose Your Avatar'"
           :villagers="state.queriedVillagers"
-          :onVillagerClick="handleVillagerClick"
+          @villager-click="handleVillagerClick"
         />
 
-        <AvatarForm
+        <RegisterForm
           v-if="state.selectedVillager?.id"
-          :onBackClick="handleFormBackClick"
           :selectedVillager="state.selectedVillager"
+          :errors="state.formErrors"
+          @back-click="handleFormBackClick"
+          @submit="handleSubmit"
         />
       </template>
     </v-container>

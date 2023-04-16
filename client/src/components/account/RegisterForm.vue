@@ -3,7 +3,7 @@
     <div class="avatar-form__top">
       <v-btn icon="mdi-arrow-left" @click="onBackClick"></v-btn>
     </div>
-    <v-form v-model="valid" class="my-10">
+    <v-form v-model="valid" class="my-10" @submit.prevent="onSubmitClick">
       <v-container style="max-width: 1100px" fluid>
         <v-row>
           <v-col cols="12" md="4" align-self="end">
@@ -18,8 +18,12 @@
           </v-col>
           <v-col>
             <v-row>
-              <v-col sm="12">
+              <v-col sm="12" mb="2">
                 <h1 class="text-center text-h1">Form</h1>
+              </v-col>
+
+              <v-col sm="12" v-for="error in errors" :key="error" style="padding: 0">
+                <p class="text-center text-p text-red">* {{ error }}</p>
               </v-col>
             </v-row>
             <v-row>
@@ -77,6 +81,12 @@
             </v-row>
           </v-col>
         </v-row>
+
+        <v-row>
+          <v-col>
+            <v-btn type="submit" :disabled="!valid">Submit</v-btn>
+          </v-col>
+        </v-row>
       </v-container>
     </v-form>
   </div>
@@ -84,16 +94,18 @@
 
 <script setup>
 import { ref } from 'vue'
+
 defineProps({
   selectedVillager: {
     type: Object,
     required: true
   },
-  onBackClick: {
-    type: Function,
-    required: true
+  errors: {
+    type: Array,
+    required: false
   }
 })
+const emit = defineEmits(['back-click', 'submit'])
 
 const valid = ref(false)
 const email = ref('')
@@ -103,59 +115,38 @@ const passwordConfirm = ref('')
 const showPassword = ref(false)
 const showPasswordConfirm = ref(false)
 
-const emailRules = [
-  (value) => {
-    if (value) return true
+const onBackClick = () => {
+  emit('back-click')
+}
+const onSubmitClick = () => {
+  emit('submit', {
+    email: email.value,
+    nickname: nickname.value,
+    password: password.value,
+    passwordConfirm: passwordConfirm.value
+  })
+}
 
-    return 'required.'
-  },
+const requiredRule = (value) => (value ? true : 'required')
+const minLengthRule = (value, length) =>
+  value.length >= length ? true : `Min ${length} characters`
+const emailRules = [
+  requiredRule,
   (value) => {
     if (/.+@.+\..+/.test(value)) return true
 
     return 'E-mail must be valid.'
   }
 ]
-
-const nicknameRules = [
-  (value) => {
-    if (value) return true
-
-    return 'required.'
-  },
-  (value) => {
-    if (value.length >= 4) return true
-
-    return 'Min 4 characters'
-  }
-]
-
-const passwordRules = [
-  (value) => {
-    if (value) return true
-
-    return 'required.'
-  },
-
-  (value) => {
-    if (value.length < 7) {
-      return 'Min 8 characters'
-    }
-
-    return true
-  }
-]
-
+const nicknameRules = [requiredRule, (value) => minLengthRule(value, 4)]
+const passwordRules = [requiredRule, (value) => minLengthRule(value, 8)]
 const passwordConfirmRules = [
-  (value) => {
-    if (value) return true
-
-    return 'required.'
-  },
-
+  requiredRule,
   (value) => {
     if (value !== password.value) {
       return 'Password and confirmation must match'
     }
+    return true
   }
 ]
 </script>

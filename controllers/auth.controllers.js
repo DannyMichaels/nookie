@@ -3,7 +3,11 @@ const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
   try {
-    const { nickname, email, password } = req.body;
+    const { nickname, email, password, villagerId } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ error: 'Password cannot be empty' });
+    }
 
     const hash = bcrypt.hashSync(password, 10);
 
@@ -12,14 +16,17 @@ const register = async (req, res) => {
       nickname,
       email,
       password: hash,
+      villagerId, // avatar from Nookipedia villagers api check villagers.seed.js
     });
 
     // send back the new user and auth token to the
     // client { user, authToken }
     const data = await user.authorize();
-    return res.json(data);
+    return res.status(200).json(data);
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    const msg = errorMessage(error.message);
+    const errors = msg.split(',');
+    return res.status(400).json({ errors });
   }
 };
 
@@ -33,8 +40,8 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await User.authenticate(email, password);
-    return res.json(user);
+    const { user, authToken } = await User.authenticate(email, password);
+    return res.status(200).json({ user, authToken });
   } catch (error) {
     return res
       .status(400)
@@ -47,13 +54,9 @@ const logout = async (req, res) => {
   // authorization we should have access to the user
   // on the req object, so we will try to find it and
   // call the model method logout
-  const {
-    user,
-    cookies: { auth_token: authToken },
-    headers,
-  } = req;
+  const { user, headers, cookies } = req;
 
-  const token = authToken || headers.authorization;
+  const token = cookies.auth_token || headers.authorization;
   // we only want to attempt a logout if the user is
   // present in the req object, meaning it already
   // passed the authentication middleware. There is no reason
@@ -67,6 +70,10 @@ const logout = async (req, res) => {
   // use status code 400 indicating a bad request was made
   // and send back a message
   return res.status(400).send({ error: 'not authenticated' });
+};
+
+const errorMessage = (error) => {
+  return error.replaceAll('Validation error:', '').trim();
 };
 
 module.exports = {
