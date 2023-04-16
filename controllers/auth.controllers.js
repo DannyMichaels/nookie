@@ -33,8 +33,8 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await User.authenticate(email, password);
-    return res.json(user);
+    const { user, authToken } = await User.authenticate(email, password);
+    return res.json({ user, authToken });
   } catch (error) {
     return res
       .status(400)
@@ -47,13 +47,9 @@ const logout = async (req, res) => {
   // authorization we should have access to the user
   // on the req object, so we will try to find it and
   // call the model method logout
-  const {
-    user,
-    cookies: { auth_token: authToken },
-    headers,
-  } = req;
+  const { user, headers, cookies } = req;
 
-  const token = authToken || headers.authorization;
+  const token = cookies.auth_token || headers.authorization;
   // we only want to attempt a logout if the user is
   // present in the req object, meaning it already
   // passed the authentication middleware. There is no reason
