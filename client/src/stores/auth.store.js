@@ -62,7 +62,8 @@ export const useAuthStore = defineStore({
     logout() {
       this.user = null
       localStorage.removeItem('user')
-      router.push('/account/login')
+      const path = window.location.pathname.includes('register') ? 'register' : 'login'
+      router.push(`/account/${path}`)
     }
   }
 })
