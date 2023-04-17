@@ -5,6 +5,7 @@ import VillagersList from '@/components/VillagersList.vue'
 import RegisterForm from '@/components/account/RegisterForm.vue'
 import { useAuthStore } from '@/stores'
 import { router } from '@/router'
+import { getAllVillagers } from '@/services/villagers'
 
 const state = reactive({
   allVillagers: [],
@@ -17,9 +18,9 @@ const state = reactive({
 
 onMounted(async () => {
   try {
-    const resp = await api.get('/villagers')
-    state.allVillagers = resp.data
-    state.queriedVillagers = resp.data
+    const villagers = await getAllVillagers()
+    state.allVillagers = villagers
+    state.queriedVillagers = villagers
     state.isLoading = false
   } catch (error) {
     state.fetchError = true

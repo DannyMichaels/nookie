@@ -43,17 +43,9 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      villagerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: false,
-        references: {
-          model: 'Villager',
-          key: 'id',
-        },
-      },
       bells: {
-        type: DataTypes.INTEGER, // currency
+        type: DataTypes.INTEGER, // bells are currency
+        defaultValue: 0,
       },
     },
     { timestamps: true }
@@ -96,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     // sequelize which is made for any 'hasMany' relationships
     await user.addAuthToken(authToken);
 
-    return { user, authToken };
+    return { user, token: authToken.token };
   };
 
   User.prototype.logout = async function (token) {

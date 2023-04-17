@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, AuthToken } = require('../models');
 const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
@@ -20,7 +20,7 @@ const register = async (req, res) => {
     });
 
     // send back the new user and auth token to the
-    // client { user, authToken }
+    // client { user, token }
     const data = await user.authorize();
     return res.status(200).json(data);
   } catch (error) {
@@ -39,8 +39,8 @@ const login = async (req, res) => {
   }
 
   try {
-    const { user, authToken } = await User.authenticate(email, password);
-    return res.status(200).json({ user, authToken });
+    const { user, token } = await User.authenticate(email, password);
+    return res.status(200).json({ user, token });
   } catch (error) {
     return res.status(400).json({ error: 'invalid email or password' });
   }
@@ -73,8 +73,38 @@ const errorMessage = (error) => {
   return error.replaceAll('Validation error:', '').trim();
 };
 
+const verify = async (req, res) => {
+  try {
+    const token = req.cookies?.auth_token || req.headers?.authorization;
+
+    if (!token) {
+      return res.status(401).json({ isAuthenticated: false });
+    }
+
+    const authToken = await AuthToken.findOne({
+      where: { token },
+      include: User,
+    });
+
+    const result = await User.findByPk(authToken.User.dataValues.id);
+    if (result?.dataValues?.id) {
+      return res.status(200).json({
+        isAuthenticated: true,
+        user: { ...result.dataValues },
+        token: authToken.token,
+      });
+    }
+
+    return res.status(401).json({ isAuthenticated: false });
+  } catch (error) {
+    console.log('verify error', error);
+    return res.status(401).json({ isAuthenticated: false });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
+  verify,
 };

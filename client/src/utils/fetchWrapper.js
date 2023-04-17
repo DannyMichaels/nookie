@@ -12,9 +12,7 @@ function request(method) {
   return async (url, body) => {
     const requestOptions = {
       method,
-      headers: {
-        Connection: 'Keep-Alive'
-      }
+      headers: {}
     }
 
     const authHeader = getAuthHeader()
@@ -32,14 +30,7 @@ function request(method) {
 
 // helper functions
 function getAuthHeader() {
-  // return auth header with jwt if user is logged in and request is to the api url
-  const { user } = useAuthStore()
-  const isLoggedIn = !!user?.token
-
-  if (isLoggedIn) {
-    return user.token
-  }
-  return null
+  return localStorage.getItem('authToken') || null
 }
 
 async function handleResponse(response) {
