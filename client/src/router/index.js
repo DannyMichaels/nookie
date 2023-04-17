@@ -40,7 +40,7 @@ router.beforeEach(async (to) => {
   const publicPages = ['/account/login', '/account/register']
   const authRequired = !publicPages.includes(to.path)
   const authStore = useAuthStore()
-  const isLoggedIn = !!authStore?.token
+  const isLoggedIn = !!authStore?.token ?? localStorage.getItem('authToken')
 
   if (authRequired && !isLoggedIn) {
     authStore.returnUrl = to.fullPath
